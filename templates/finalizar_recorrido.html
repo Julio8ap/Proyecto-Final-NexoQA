@@ -1,0 +1,6 @@
+{% extends 'base.html' %}{% block content %}
+<h1 class="h3">Finalizar recorrido</h1>
+<div class="card card-body editor">
+<dl><dt>Línea</dt><dd>{{ recorrido.linea }}</dd><dt>Bus</dt><dd>{{ recorrido.bus }}</dd><dt>Fecha e inicio</dt><dd>{{ recorrido.fecha }} · {{ recorrido.hora_inicio }}</dd><dt>Estado actual</dt><dd>{{ recorrido.get_estado_display }}</dd></dl>
+<form method="post">{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary">Confirmar finalización</button> <a class="btn btn-outline-secondary" href="{% url 'listado' 'recorridos' %}">Volver</a></form>
+</div>{% endblock %}

@@ -1,0 +1,12 @@
+{% load static %}<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Transmetro · nexoQA{% endblock %}</title>
+<link rel="stylesheet" href="{% static 'vendor/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'app.css' %}"></head>
+<body><header class="navbar navbar-dark px-4"><a class="navbar-brand" href="{% url 'dashboard' %}">TRANSMETRO <small>Control operativo</small></a>
+{% if user.is_authenticated %}<div class="d-flex align-items-center gap-3 text-white"><span>{{ user.username }}</span><a class="text-white" href="{% url 'password_change' %}">Cambiar clave</a><form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="btn btn-outline-light btn-sm">Salir</button></form></div>{% endif %}</header>
+<div class="demo">Sistema Municipal</div>
+<div class="layout">{% if user.is_authenticated %}<aside><nav aria-label="Navegación principal"><a href="{% url 'dashboard' %}">Resumen operativo</a>{% for item in menu_modulos %}<a href="{% url 'listado' item.slug %}">{{ item.titulo }}</a>{% endfor %}{% if perms.operacion.view_linea %}<a href="{% url 'reportes' %}">Reportes</a>{% endif %}</nav><p class="small mt-4 text-secondary">Municipalidad de Guatemala<br>Gestión de transporte público</p></aside>{% endif %}
+<main><div class="small text-secondary mb-3"><a href="{% url 'dashboard' %}">Inicio</a> / {{ titulo|default:'Panel interno' }}</div>
+{% for message in messages %}<div role="status" class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'warning' %}alert-warning{% else %}alert-success{% endif %}">{{ message }}</div>{% endfor %}
+{% block content %}{% endblock %}<footer>Desarrollado por nexoQA</footer></main></div></body></html>

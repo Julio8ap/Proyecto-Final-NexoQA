@@ -1,0 +1,10 @@
+{% extends 'base.html' %}{% block content %}
+<h1 class="h3">Eliminar usuario</h1>
+<div class="card card-body editor">
+{% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% else %}
+<p>¿Desea eliminar permanentemente al usuario <strong>{{ usuario_objetivo.username }}</strong>?</p>
+<p>Esta acción elimina la cuenta y su acceso al sistema. También puede desactivarla desde Editar para conservarla.</p>
+<form method="post">{% csrf_token %}<button class="btn btn-danger">Confirmar eliminación</button> <a class="btn btn-outline-secondary" href="{% url 'listado' 'usuarios' %}">Cancelar</a></form>
+{% endif %}
+{% if error %}<a class="btn btn-outline-secondary" href="{% url 'listado' 'usuarios' %}">Volver a usuarios</a>{% endif %}
+</div>{% endblock %}

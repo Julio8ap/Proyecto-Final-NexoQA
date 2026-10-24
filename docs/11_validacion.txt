@@ -1,0 +1,146 @@
+Validaci?n final ? 23/10/2026 ? entorno virtual local
+
+$ python manage.py check
+System check identified no issues (0 silenced).
+
+Exit code: 0
+
+$ python manage.py test --verbosity 2
+Found 25 test(s).
+Operations to perform:
+  Synchronize unmigrated apps: accounts, messages, reportes, staticfiles
+  Apply all migrations: admin, auth, contenttypes, core, operacion, personal, sessions
+Synchronizing apps without migrations:
+  Creating tables...
+    Running deferred SQL...
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying admin.0003_logentry_add_action_flag_choices... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying auth.0009_alter_user_last_name_max_length... OK
+  Applying auth.0010_alter_group_name_max_length... OK
+  Applying auth.0011_update_proxy_permissions... OK
+  Applying auth.0012_alter_user_first_name_max_length... OK
+  Applying core.0001_initial... OK
+  Applying operacion.0001_initial... OK
+  Applying personal.0001_initial... OK
+  Applying operacion.0002_initial... OK
+  Applying sessions.0001_initial... OK
+System check identified no issues (0 silenced).
+Creating test database for alias 'default' ('file:memorydb_default?mode=memory&cache=shared')...
+
+test_01_autenticacion_y_logout (core.tests.TransmetroTests.test_01_autenticacion_y_logout) ... ok
+test_02_operador_solo_demanda (core.tests.TransmetroTests.test_02_operador_solo_demanda) ... ok
+test_03_supervisor_catalogos_y_usuarios (core.tests.TransmetroTests.test_03_supervisor_catalogos_y_usuarios) ... ok
+test_04_navegacion_administrador (core.tests.TransmetroTests.test_04_navegacion_administrador) ... ok
+test_05_csrf_y_metodos (core.tests.TransmetroTests.test_05_csrf_y_metodos) ... ok
+test_06_bus_capacidad_parqueo (core.tests.TransmetroTests.test_06_bus_capacidad_parqueo) ... ok
+test_07_maximo_buses (core.tests.TransmetroTests.test_07_maximo_buses) ... ok
+test_08_minimo_buses_y_asignacion_opcional (core.tests.TransmetroTests.test_08_minimo_buses_y_asignacion_opcional) ... ok
+test_09_linea_activacion_y_distancia (core.tests.TransmetroTests.test_09_linea_activacion_y_distancia) ... ok
+test_10_tramos_unicidad_orden_y_estacion (core.tests.TransmetroTests.test_10_tramos_unicidad_orden_y_estacion) ... ok
+test_11_guardias_cobertura (core.tests.TransmetroTests.test_11_guardias_cobertura) ... ok
+test_12_demanda_umbral_inclusivo (core.tests.TransmetroTests.test_12_demanda_umbral_inclusivo) ... ok
+test_13_demanda_validaciones (core.tests.TransmetroTests.test_13_demanda_validaciones) ... ok
+test_14_responsable_post_no_suplantable (core.tests.TransmetroTests.test_14_responsable_post_no_suplantable) ... ok
+test_15_ocupacion_limites (core.tests.TransmetroTests.test_15_ocupacion_limites) ... ok
+test_16_recorrido_horas_y_asignacion (core.tests.TransmetroTests.test_16_recorrido_horas_y_asignacion) ... ok
+test_17_alertas_idempotentes_historicas (core.tests.TransmetroTests.test_17_alertas_idempotentes_historicas) ... ok
+test_18_cambio_estado_y_auditoria (core.tests.TransmetroTests.test_18_cambio_estado_y_auditoria) ... ok
+test_19_reportes_y_filtros (core.tests.TransmetroTests.test_19_reportes_y_filtros) ... ok
+test_20_crud_catalogo_personal_y_usuarios (core.tests.TransmetroTests.test_20_crud_catalogo_personal_y_usuarios) ... ok
+test_21_seed_idempotente (core.tests.TransmetroTests.test_21_seed_idempotente) ... ok
+test_22_restricciones_base_datos (core.tests.TransmetroTests.test_22_restricciones_base_datos) ... ok
+test_23_errores_y_escape (core.tests.TransmetroTests.test_23_errores_y_escape) ... ok
+test_24_demanda_sin_referencia (core.tests.TransmetroTests.test_24_demanda_sin_referencia) ... ok
+test_25_auditoria_atomica_y_historico (core.tests.TransmetroTests.test_25_auditoria_atomica_y_historico) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 4.974s
+
+OK
+Destroying test database for alias 'default' ('file:memorydb_default?mode=memory&cache=shared')...
+
+
+Exit code: 0
+
+$ python manage.py makemigrations --check --dry-run
+No changes detected
+
+Exit code: 0
+
+$ python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, core, operacion, personal, sessions
+Running migrations:
+  No migrations to apply.
+
+Exit code: 0
+
+$ python manage.py seed_demo
+Datos DEMO ya existentes: se conservan sin duplicar ni restablecer claves.
+
+Exit code: 0
+
+$ python manage.py showmigrations
+admin
+ [X] 0001_initial
+ [X] 0002_logentry_remove_auto_add
+ [X] 0003_logentry_add_action_flag_choices
+auth
+ [X] 0001_initial
+ [X] 0002_alter_permission_name_max_length
+ [X] 0003_alter_user_email_max_length
+ [X] 0004_alter_user_username_opts
+ [X] 0005_alter_user_last_login_null
+ [X] 0006_require_contenttypes_0002
+ [X] 0007_alter_validators_add_error_messages
+ [X] 0008_alter_user_username_max_length
+ [X] 0009_alter_user_last_name_max_length
+ [X] 0010_alter_group_name_max_length
+ [X] 0011_update_proxy_permissions
+ [X] 0012_alter_user_first_name_max_length
+contenttypes
+ [X] 0001_initial
+ [X] 0002_remove_content_type_name
+core
+ [X] 0001_initial
+operacion
+ [X] 0001_initial
+ [X] 0002_initial
+personal
+ [X] 0001_initial
+sessions
+ [X] 0001_initial
+
+Exit code: 0
+
+$ python -m pip check
+No broken requirements found.
+
+Exit code: 0
+
+Verificación adicional ejecutada sobre servidor real local:
+- Login con cookie y token CSRF válido: redirección al dashboard y HTTP 200.
+- HTTP 200: /gestion/lineas/, /gestion/lineas/nuevo/, /reportes/?tipo=demanda, /reportes/?tipo=alertas.
+- HTTP 200: Bootstrap local (232803 bytes) y app.css (2241 bytes).
+- Servidor temporal detenido después de la comprobación.
+
+SQLite:
+- PRAGMA integrity_check: ok.
+- PRAGMA foreign_key_check: sin filas (sin violaciones).
+- Consultas docs/08_consultas_sql.sql ejecutadas: 8.
+- Filas por consulta: 10, 3, 4, 18, 9, 9, 9, 0.
+- Líneas activas fuera de rango N–2N: 0.
+
+No se realizaron pruebas visuales de navegador, pruebas de carga ni restauración real de respaldo.

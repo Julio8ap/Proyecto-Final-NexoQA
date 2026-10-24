@@ -1,0 +1,35 @@
+Actualización Sistema Municipal
+
+Comandos: python manage.py test --verbosity 1 y python manage.py makemigrations --check --dry-run.
+La salida inicial anunció la creación de la base de pruebas; salida final de ambos comandos:
+
+......................
+----------------------------------------------------------------------
+Ran 25 tests in 11.295s
+
+OK
+Destroying test database for alias 'default'...
+Found 25 test(s).
+System check identified no issues (0 silenced).
+No changes detected
+
+Migración 0003_alter_recorrido_options aplicada y configurar_roles ejecutado sin errores.
+La base existente conserva datos, usuarios y contraseñas.
+
+Comprobaciones adicionales finales:
+- manage.py check: sin incidencias.
+- manage.py migrate --check: exit code 0, sin migraciones pendientes.
+- manage.py seed_demo: datos existentes conservados sin duplicar/restablecer claves.
+- Black --check: 36 archivos sin cambios necesarios.
+
+Actualización posterior: eliminación de usuarios.
+configurar_roles: Roles configurados.
+python manage.py test --verbosity 1:
+Ran 25 tests in 12.058s
+OK
+System check identified no issues (0 silenced).
+python manage.py check:
+System check identified no issues (0 silenced).
+CP-20 incluye GET sin borrado, POST autorizado, CSRF, denegación Operativo,
+autoborrado bloqueado, PROTECT de demanda, superusuarios y auditoría transaccional.
+

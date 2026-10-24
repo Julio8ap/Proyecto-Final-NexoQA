@@ -62,6 +62,8 @@ anteriores conservan únicamente el Administrativo. La selección de rol en Usua
 ofrece solo las dos opciones actuales.
 
 La franja superior muestra «Sistema Municipal» y el pie «Desarrollado por nexoQA».
+El subtítulo destacado indica «Control administrativo» o «Control operativo» según
+el rol de la sesión; antes de iniciar sesión muestra «Gestión municipal».
 Los formularios, detalles y reportes indican pasajeros/personas, kilómetros y
 porcentajes en los campos correspondientes. Los datos de ejemplo siguen siendo ficticios.
 

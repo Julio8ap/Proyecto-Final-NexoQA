@@ -3,7 +3,7 @@
 <title>{% block title %}Transmetro · nexoQA{% endblock %}</title>
 <link rel="stylesheet" href="{% static 'vendor/bootstrap.min.css' %}">
 <link rel="stylesheet" href="{% static 'app.css' %}"></head>
-<body><header class="navbar navbar-dark px-4"><a class="navbar-brand" href="{% url 'dashboard' %}">TRANSMETRO <small>Control operativo</small></a>
+<body><header class="navbar navbar-dark px-4"><a class="navbar-brand" href="{% url 'dashboard' %}">TRANSMETRO <small class="brand-subtitle">{{ subtitulo_control }}</small></a>
 {% if user.is_authenticated %}<div class="d-flex align-items-center gap-3 text-white"><span>{{ user.username }}</span><a class="text-white" href="{% url 'password_change' %}">Cambiar clave</a><form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="btn btn-outline-light btn-sm">Salir</button></form></div>{% endif %}</header>
 <div class="demo">Sistema Municipal</div>
 <div class="layout">{% if user.is_authenticated %}<aside><nav aria-label="Navegación principal"><a href="{% url 'dashboard' %}">Resumen operativo</a>{% for item in menu_modulos %}<a href="{% url 'listado' item.slug %}">{{ item.titulo }}</a>{% endfor %}{% if perms.operacion.view_linea %}<a href="{% url 'reportes' %}">Reportes</a>{% endif %}</nav><p class="small mt-4 text-secondary">Municipalidad de Guatemala<br>Gestión de transporte público</p></aside>{% endif %}

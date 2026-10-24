@@ -8,10 +8,14 @@
   Exige confirmación POST/CSRF, impide cuenta propia y respeta PROTECT de demanda;
   los superusuarios técnicos quedan protegidos frente al administrador funcional.
 - Roles actuales: Administrativo y Operativo. Solo el primero gestiona usuarios y
-  módulos de negocio; el segundo tiene permisos de lectura más `finalizar_recorrido`
-  y `descargar_reportes`. No tiene `change_recorrido`: el cierre usa una vista
+  módulos de negocio; el segundo tiene permisos de lectura más `finalizar_recorrido`,
+  `descargar_reportes` y `atender_alerta`. No tiene `change_recorrido`: el cierre usa una vista
   específica que solo acepta hora final y estado destino FINALIZADO, verificando
   estado previo, hora, permiso y CSRF. No se aceptan bus/línea/piloto enviados.
+- La atención de alertas usa un permiso específico para ambos roles. Nota
+  obligatoria, estados limitados, autor/fecha en servidor y operación atómica. Las
+  gestiones anteriores no son editables; se escapan al mostrarlas. El nombre del
+  autor se conserva aunque su FK quede nula tras una eliminación permitida.
 - CSV usa filtros y permisos de servidor, exporta todas las coincidencias y
   neutraliza valores que una hoja de cálculo interpretaría como fórmulas.
 - CSRF en todos los formularios POST. Logout por POST. Cliente estricto comprobado.

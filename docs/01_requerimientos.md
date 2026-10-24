@@ -34,7 +34,7 @@ aspectos no funcionales que requieren revisión visual, carga o un ensayo de res
 | Personal y guardias | Gestionar | Consultar |
 | Recorridos | Gestionar y finalizar | Consultar y finalizar programados/en curso |
 | Demanda | Crear/editar/consultar | Consultar |
-| Alertas | Consultar/cambiar estado | Consultar |
+| Alertas | Consultar/atender con gestión y cambiar estado | Consultar/atender con gestión y cambiar estado |
 | Usuarios | Gestionar | Sin acceso |
 | Auditoría | Consultar | Sin acceso |
 | Reportes HTML y descarga CSV | Sí | Sí |
@@ -42,6 +42,8 @@ aspectos no funcionales que requieren revisión visual, carga o un ensayo de res
 La solicitud posterior del usuario sustituye los tres roles originales por estos
 dos. La finalización usa un permiso específico, sin otorgar edición general de
 recorridos al Operativo. Se añade descarga CSV conservando todos los filtros.
+Una solicitud posterior habilita también `atender_alerta` a ambos roles, con nota
+obligatoria e historial de actuaciones por alerta (usuario, fecha y estados).
 Los roles se materializan como grupos con permisos Django. El superusuario es una
 cuenta técnica opcional independiente de los usuarios demo. No se crean modelos
 de autenticación propios. Un Operador administrativo y un User son entidades

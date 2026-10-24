@@ -11,6 +11,7 @@ from .models import (
     Recorrido,
     RegistroDemanda,
     Alerta,
+    GestionAlerta,
 )
 
 for modelo in [
@@ -24,5 +25,6 @@ for modelo in [
     Recorrido,
     RegistroDemanda,
     Alerta,
+    GestionAlerta,
 ]:
     admin.site.register(modelo, ConsultaAdmin)

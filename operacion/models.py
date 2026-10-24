@@ -7,6 +7,8 @@ from django.db.models import Q, Sum
 from django.utils import timezone
 from core.models import ValidatedModel
 
+ESTADOS_ALERTA = [(x, x.title()) for x in ["PENDIENTE", "ATENDIDA", "CERRADA"]]
+
 
 class Catalogo(ValidatedModel):
     nombre = models.CharField(max_length=120, unique=True)
@@ -386,12 +388,35 @@ class Alerta(ValidatedModel):
     )
     estado = models.CharField(
         max_length=15,
-        choices=[(x, x.title()) for x in ["PENDIENTE", "ATENDIDA", "CERRADA"]],
+        choices=ESTADOS_ALERTA,
         default="PENDIENTE",
     )
 
     class Meta:
         ordering = ["-fecha_hora"]
+        permissions = [
+            ("atender_alerta", "Puede registrar la atención de alertas")
+        ]
 
     def __str__(self):
         return f"{self.get_tipo_display()} · {self.linea} · {self.get_estado_display()} · {self.descripcion}"
+
+
+class GestionAlerta(ValidatedModel):
+    alerta = models.ForeignKey(
+        Alerta, on_delete=models.PROTECT, related_name="gestiones"
+    )
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL
+    )
+    usuario_nombre = models.CharField(max_length=150, editable=False)
+    fecha_hora = models.DateTimeField(auto_now_add=True)
+    estado_anterior = models.CharField(max_length=15, choices=ESTADOS_ALERTA)
+    estado_nuevo = models.CharField(max_length=15, choices=ESTADOS_ALERTA)
+    descripcion = models.TextField(max_length=2000)
+
+    class Meta:
+        ordering = ["-fecha_hora", "-pk"]
+
+    def __str__(self):
+        return f"Alerta #{self.alerta_id} · {self.usuario_nombre} · {self.get_estado_nuevo_display()}"

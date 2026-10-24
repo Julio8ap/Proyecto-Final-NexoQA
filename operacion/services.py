@@ -1,8 +1,8 @@
 from django.db import transaction
 from core.models import auditar
-from .models import Alerta, RegistroDemanda, Recorrido
+from .models import Alerta, RegistroDemanda, Recorrido, GestionAlerta
 from django.core.exceptions import PermissionDenied, ValidationError
-from .forms import FinalizarRecorridoForm
+from .forms import FinalizarRecorridoForm, AtenderAlertaForm
 
 
 @transaction.atomic
@@ -64,3 +64,33 @@ def finalizar_recorrido(pk, usuario, hora_final):
     guardar_operacion(recorrido, usuario, False)
     auditar(usuario, recorrido, "CAMBIAR_ESTADO")
     return recorrido
+
+
+@transaction.atomic
+def atender_alerta(pk, usuario, descripcion, estado):
+    if not usuario.has_perm("operacion.atender_alerta"):
+        raise PermissionDenied
+    form = AtenderAlertaForm({"descripcion": descripcion, "estado": estado})
+    if not form.is_valid():
+        raise ValidationError(
+            [error for errores in form.errors.values() for error in errores]
+        )
+    alerta = Alerta.objects.select_for_update().get(pk=pk)
+    gestion = GestionAlerta.objects.create(
+        alerta=alerta,
+        usuario=usuario,
+        usuario_nombre=usuario.get_username(),
+        estado_anterior=alerta.estado,
+        estado_nuevo=form.cleaned_data["estado"],
+        descripcion=form.cleaned_data["descripcion"],
+    )
+    anterior = alerta.estado
+    alerta.estado = form.cleaned_data["estado"]
+    alerta.save()
+    auditar(
+        usuario,
+        alerta,
+        "CAMBIAR_ESTADO" if anterior != alerta.estado else "ACTUALIZAR",
+    )
+    auditar(usuario, gestion, "CREAR")
+    return gestion

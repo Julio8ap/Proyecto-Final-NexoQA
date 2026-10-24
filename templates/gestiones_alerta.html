@@ -1,0 +1,10 @@
+<section class="card card-body mt-4">
+<h2 class="h5">Historial de atención</h2>
+{% for gestion in gestiones %}
+<article class="border-bottom py-3">
+<p class="mb-1"><strong>{{ gestion.usuario_nombre }}</strong> · {{ gestion.fecha_hora|date:'d/m/Y H:i' }} (hora local)</p>
+<p class="small text-secondary">{{ gestion.get_estado_anterior_display }} → {{ gestion.get_estado_nuevo_display }}</p>
+<div>{{ gestion.descripcion|linebreaksbr }}</div>
+</article>
+{% empty %}<p class="text-secondary mb-0">Todavía no se han registrado gestiones para esta alerta.</p>{% endfor %}
+</section>

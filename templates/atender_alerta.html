@@ -1,0 +1,7 @@
+{% extends 'base.html' %}{% block content %}
+<h1 class="h3">Atender alerta #{{ alerta.pk }}</h1>
+<div class="card card-body editor">
+<p><strong>{{ alerta.get_tipo_display }}</strong> · {{ alerta.linea }}{% if alerta.estacion %} · {{ alerta.estacion }}{% endif %}</p>
+<p>{{ alerta.descripcion }}</p><p>Estado actual: <strong>{{ alerta.get_estado_display }}</strong></p>
+<form method="post">{% csrf_token %}{{ form.as_p }}<p class="form-text">Su usuario y la fecha de atención se registrarán automáticamente. Las gestiones anteriores se conservan.</p><button class="btn btn-primary">Guardar gestión</button> <a class="btn btn-outline-secondary" href="{% url 'detalle' 'alertas' alerta.pk %}">Cancelar</a></form>
+</div>{% include 'gestiones_alerta.html' %}{% endblock %}

@@ -16,10 +16,13 @@
 | Recorrido | bus, línea, piloto PROTECT; fecha, horas, ocupación estimada %, estado, observaciones, capacidad de referencia histórica |
 | RegistroDemanda | estación, línea, usuario responsable PROTECT; fecha, hora, cantidad ≥ 0, observaciones, capacidad histórica |
 | Alerta | tipo, fecha/hora, línea, estación/bus opcionales, demanda/recorrido opcionales únicos, descripción, nivel, estado |
+| GestionAlerta | alerta PROTECT, usuario SET_NULL, nombre de usuario histórico, fecha/hora, estado anterior/nuevo, descripción de gestión hasta 2000 caracteres |
 | Auditoria | usuario SET_NULL, fecha/hora, módulo, acción, registro afectado, descripción |
 | User/Group/Permission | Modelos estándar de Django |
 
-No hay modelos auxiliares persistentes fuera del mínimo. `Catalogo`, `Persona` y
+Se añade GestionAlerta para conservar cada intervención sin sobrescribir notas
+anteriores. Su relación 1:N con Alerta y el nombre histórico conservan la trazabilidad
+incluso si se elimina una cuenta sin demandas vinculadas. `Catalogo`, `Persona` y
 `ValidatedModel` son clases abstractas para reutilización de campos y validación;
 no crean tablas. La relación opcional Alerta → Recorrido permite no duplicar una
 alerta de baja ocupación y ubicar su evidencia original. Las capacidades de
@@ -44,6 +47,8 @@ erDiagram
   Estacion ||--o{ RegistroDemanda : observa
   RegistroDemanda o|--o| Alerta : genera
   Recorrido o|--o| Alerta : genera
+  Alerta ||--o{ GestionAlerta : seguimiento
+  User o|--o{ GestionAlerta : registra
   User o|--o{ Auditoria : ejecuta
 ```
 

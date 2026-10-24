@@ -1,6 +1,19 @@
 from datetime import datetime
 from django import forms
 from django.utils import timezone
+from .models import ESTADOS_ALERTA
+
+
+class AtenderAlertaForm(forms.Form):
+    descripcion = forms.CharField(
+        label="Gestión realizada",
+        max_length=2000,
+        widget=forms.Textarea(attrs={"rows": 5}),
+        help_text="Describa qué se hizo o qué seguimiento se realizó (máximo 2000 caracteres).",
+    )
+    estado = forms.ChoiceField(
+        label="Estado después de la gestión", choices=ESTADOS_ALERTA
+    )
 
 
 class FinalizarRecorridoForm(forms.Form):

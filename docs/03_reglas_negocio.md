@@ -36,8 +36,8 @@
 9. Alta demanda si `cantidad * 2 >= capacidad_referencia * 3`, evitando redondeo del
    umbral de 150 %. Una demanda puede generar una sola alerta. 149/100 no alerta;
    150/100 sí alerta. Es demanda estimada, nunca ocupación exacta.
-10. Alertas: PENDIENTE, ATENDIDA y CERRADA. Administrativo cambia estado;
-    Operativo consulta. Se permite cambiar entre los tres estados, incluida reapertura.
+10. Alertas: PENDIENTE, ATENDIDA y CERRADA. Ambos roles registran gestiones y
+    cambian estado desde Atender. Se permite cambiar entre los tres estados, incluida reapertura.
     Las alertas existentes permanecen como evidencia histórica si se corrige un recorrido;
     el usuario debe resolverlas explícitamente. No se ejecuta ninguna acción física.
 11. Escritura de objeto, evaluación de alerta y auditoría se realizan en transacción.
@@ -48,7 +48,7 @@
     con la línea inactiva. No hay reservas o programación avanzada de turnos.
 
 13. Dos roles: Administrativo gestiona todos los módulos de negocio y usuarios;
-    Operativo solo consulta, descarga reportes y finaliza recorridos. No puede
+    Operativo consulta, descarga reportes, finaliza recorridos y atiende alertas. No puede
     crear demanda ni editar alertas, personal, usuarios o recorridos por el formulario
     general. Auditoría conserva carácter de evidencia y es de solo lectura.
 14. Finalización: botón por fila de recorrido con línea visible y filtro por línea.
@@ -67,6 +67,16 @@
     se muestra un mensaje con la alternativa de desactivar. Una eliminación correcta
     registra ELIMINAR en auditoría dentro de la misma transacción. Los eventos
     anteriores de auditoría se conservan (usuario SET_NULL si se elimina su cuenta).
+
+17. Atender una alerta exige permiso `atender_alerta`, concedido a ambos roles,
+    texto no vacío de hasta 2000 caracteres y estado válido. Usuario, nombre histórico
+    y fecha/hora se fijan en servidor. Cada envío válido crea una GestionAlerta,
+    conservando todas las anteriores, aunque no cambie el estado. Se permite reabrir
+    mediante nueva nota. Gestión, estado y auditoría se guardan en una transacción.
+    GET solo muestra; POST exige CSRF. No se puede editar tipo, descripción original,
+    línea, bus o responsable por este formulario. La antigua edición de estado de
+    Administrativo redirige al flujo con nota; no actualiza directamente. Las alertas
+    anteriores conservan estado sin fabricar notas de atención previas.
 
 Las reglas multitabla se garantizan por el flujo del sistema en uso académico con
 escritores serializados. Actualizaciones masivas, SQL directo y concurrencia avanzada

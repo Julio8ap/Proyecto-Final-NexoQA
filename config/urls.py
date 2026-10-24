@@ -3,7 +3,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import path
 from core import views
 from reportes.views import reportes
-from operacion.views import finalizar
+from operacion.views import finalizar, atender
 from accounts.views import eliminar_usuario
 
 urlpatterns = [
@@ -23,6 +23,7 @@ urlpatterns = [
     ),
     path("", views.dashboard, name="dashboard"),
     path("reportes/", reportes, name="reportes"),
+    path("alertas/<int:pk>/atender/", atender, name="atender_alerta"),
     path(
         "usuarios/<int:pk>/eliminar/",
         eliminar_usuario,

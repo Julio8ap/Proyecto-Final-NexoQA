@@ -1,0 +1,3 @@
+{% if perms.operacion.atender_alerta %}
+<a class="btn btn-primary btn-sm" href="{% url 'atender_alerta' alerta.pk %}">{% if alerta.estado == 'PENDIENTE' %}Atender{% else %}Registrar gestión{% endif %}</a>
+{% endif %}

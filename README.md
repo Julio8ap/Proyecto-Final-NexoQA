@@ -50,8 +50,9 @@ El comando no restablece contraseñas ya cambiadas. Cada usuario puede cambiar s
 clave desde la barra superior. Estas cuentas no tienen acceso al admin de Django.
 
 Hay dos roles. Administrativo gestiona todos los módulos de negocio y usuarios.
-Operativo consulta información, visualiza/descarga reportes CSV y finaliza recorridos;
-no crea ni edita catálogos, demanda, personal, usuarios o alertas. La auditoría es de
+Operativo consulta información, visualiza/descarga reportes CSV, finaliza recorridos
+y registra la atención de alertas; no usa edición general de catálogos, demanda,
+personal, usuarios o datos originales de alertas. La auditoría es de
 solo lectura para Administrativo. Los registros mantienen sus bajas lógicas.
 
 Al actualizar una instalación anterior ejecutar `python manage.py migrate` y
@@ -107,7 +108,18 @@ el historial de recorridos y la auditoría de las escrituras realizadas en la ap
 - Ocupación estimada manual del recorrido entre 0 y 100 %; por debajo de 25 % genera
   alerta y muestra «Aplicar espera adicional de 5 minutos.».
 - Las alertas son evidencia histórica; corregir posteriormente un recorrido no borra
-  su alerta. El Administrativo puede atenderla o cerrarla.
+  su alerta. Ambos roles pueden atenderla o cerrarla registrando la gestión realizada.
+
+## Atender alertas
+
+Ambos roles disponen de Atender desde el dashboard, el listado y el detalle de
+alertas. Escribir la gestión realizada (obligatoria, hasta 2000 caracteres), elegir
+Pendiente, Atendida o Cerrada y guardar. El sistema registra automáticamente autor,
+fecha/hora local y estado anterior/nuevo. Cada intervención se añade al Historial
+de atención; no reemplaza notas previas. Se puede registrar seguimiento manteniendo
+el estado o reabrir una alerta con una nueva gestión. Las alertas anteriores a este
+cambio conservan su estado y empiezan sin notas; no se inventan gestiones históricas.
+El dashboard muestra contadores de pendientes, atendidas y cerradas.
 
 ## Finalizar recorridos y descargar reportes
 

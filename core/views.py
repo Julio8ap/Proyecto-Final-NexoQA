@@ -36,6 +36,11 @@ def dashboard(request):
             "Alertas pendientes",
             Alerta.objects.filter(estado="PENDIENTE").count(),
         ),
+        (
+            "Alertas atendidas",
+            Alerta.objects.filter(estado="ATENDIDA").count(),
+        ),
+        ("Alertas cerradas", Alerta.objects.filter(estado="CERRADA").count()),
     ]
     return render(
         request,
@@ -100,7 +105,7 @@ def listado(request, modulo):
             "pagina": Paginator(objetos, 20).get_page(request.GET.get("page")),
             "puede_crear": modulo not in ["alertas", "auditoria"]
             and request.user.has_perm(permiso(modelo, "add")),
-            "puede_editar": modulo != "auditoria"
+            "puede_editar": modulo not in ["auditoria", "alertas"]
             and request.user.has_perm(permiso(modelo, "change")),
         },
     )
@@ -135,6 +140,9 @@ def detalle(request, modulo, pk):
             "modulo": modulo,
             "objeto": objeto,
             "campos": campos,
+            "gestiones": (
+                objeto.gestiones.all() if modulo == "alertas" else None
+            ),
             "recomendacion": getattr(objeto, "recomendacion", ""),
             "distancia": (
                 objeto.distancia_total if isinstance(objeto, Linea) else None
@@ -149,6 +157,8 @@ def editar(request, modulo, pk=None):
     if modulo == "auditoria" or (modulo == "alertas" and pk is None):
         raise PermissionDenied
     objeto = get_object_or_404(modelo, pk=pk) if pk else None
+    if modulo == "alertas":
+        return redirect("atender_alerta", pk=pk)
     if (
         modulo == "usuarios"
         and objeto
@@ -181,8 +191,6 @@ def editar(request, modulo, pk=None):
                         guardado, request.user, pk is None
                     )
                     form.save_m2m()
-                    if modulo == "alertas":
-                        auditar(request.user, guardado, "CAMBIAR_ESTADO")
             messages.success(request, "Registro guardado correctamente.")
             if alerta:
                 messages.warning(request, alerta.descripcion)

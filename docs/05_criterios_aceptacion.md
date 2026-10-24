@@ -13,7 +13,7 @@
 | Baja ocupación | 24.99 % muestra espera adicional de cinco minutos y alerta; 25 % no | CP-15 |
 | Demanda | Usuario autenticado se fija como responsable; no negativos ni fecha futura ni estación ajena | CP-13, 14 |
 | Alta demanda | Referencia 100: demanda 149 no alerta y 150 sí; alerta no duplicada | CP-12, 17 |
-| Alertas | Administrativo cambia estado; Operativo consulta y no modifica; auditoría registra cambio | CP-18 |
+| Alertas | Ambos roles atienden desde dashboard/listado/detalle; nota obligatoria; autor/fecha automáticos; historial sin sobrescribir y estado auditado; inválidos/CSRF bloqueados | CP-18 |
 | Reportes | Ambos roles visualizan siete tablas y descargan CSV completo con filtros, unidades y protección de fórmulas | CP-19 |
 | Finalización | Ambos roles finalizan programados/en curso con botón por fila; no se permite cierre futuro, anterior al inicio, repetido ni alterar otros campos | CP-02 |
 | Identidad y unidades | Franja «Sistema Municipal», pie «Desarrollado por nexoQA»; cantidades rotuladas con personas/pasajeros, km o % | CP-04 |

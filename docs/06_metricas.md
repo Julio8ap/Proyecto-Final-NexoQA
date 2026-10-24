@@ -9,6 +9,13 @@ permisos y neutralización de fórmulas. Última ejecución: 25 aprobados, cero 
 11.295 segundos. Evidencia en `12_validacion_actualizacion.txt`. Las descripciones
 vigentes de los casos están en el plan de pruebas actualizado.
 
+Actualización posterior de atención de alertas: CP-18 verifica ambos roles, texto
+obligatorio, autor automático, historial, cambio/reapertura, CSRF, escape de contenido
+y rollback transaccional. Ejecución actual: 25/25 aprobadas, cero fallos, 8.174 s.
+Migración 0004 aplicada y sin cambios de modelos pendientes. Evidencia completa
+en `13_validacion_atencion_alertas.txt`; las cifras anteriores corresponden a sus
+respectivas revisiones y no sustituyen esta ejecución más reciente.
+
 | Métrica | Fórmula/dato | Resultado | Meta |
 | --- | --- | --- | --- |
 | Pruebas aprobadas | 25 aprobadas / 25 ejecutadas × 100 | 100 % | ≥ 95 % |

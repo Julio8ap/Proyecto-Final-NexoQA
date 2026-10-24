@@ -26,7 +26,11 @@ def configurar_roles():
     )
     acciones = permisos.filter(
         content_type__app_label="operacion",
-        codename__in=["finalizar_recorrido", "descargar_reportes"],
+        codename__in=[
+            "finalizar_recorrido",
+            "descargar_reportes",
+            "atender_alerta",
+        ],
     )
     grupos[OPERATIVO].permissions.set(lectura | acciones)
     # Conserva las cuentas y sus claves al sustituir los grupos anteriores.

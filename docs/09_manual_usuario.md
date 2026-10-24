@@ -9,8 +9,9 @@ Municipal» y el pie indica «Desarrollado por nexoQA».
 Abrir http://127.0.0.1:8000/, ingresar con la cuenta asignada. Cuentas demo y clave
 en README. Login incorrecto muestra error. En la barra superior puede cambiar la
 contraseña usando la actual. El dashboard presenta totales de líneas, estaciones,
-buses, buses ACTIVO, recorridos de hoy y alertas PENDIENTE, además de últimos
-cinco registros de alertas y demanda. El menú se adapta a sus permisos.
+buses, buses ACTIVO, recorridos de hoy y alertas pendientes, atendidas y cerradas,
+además de últimos cinco registros de alertas y demanda. Las alertas ofrecen Atender
+o Registrar gestión y un enlace al historial completo. El menú se adapta a sus permisos.
 
 ## Catálogos, líneas y estaciones
 
@@ -59,7 +60,8 @@ registrar fin menor que inicio; dividir en segmentos diarios si cruza medianoche
 No se calcula ocupación automáticamente. Debajo de 25 % el detalle y el mensaje
 indican «Aplicar espera adicional de 5 minutos.» y se crea alerta informativa.
 25 % no genera esa alerta. Las correcciones mantienen el vínculo histórico de línea;
-si la alerta ya no aplica, Administrativo debe atenderla/cerrarla explícitamente.
+si la alerta ya no aplica, cualquiera de los dos roles debe atenderla/cerrarla
+explícitamente registrando la gestión realizada.
 
 Ambos roles pueden finalizar recorridos. En Recorridos, filtrar por Línea si se
 desea: cada fila identifica línea, bus, fecha/inicio y estado. PROGRAMADO equivale
@@ -87,10 +89,19 @@ se conservan. Las alertas previas permanecen como evidencia histórica.
 
 ## Alertas
 
-Ambos roles consultan. Administrativo usa Editar para cambiar
-estado PENDIENTE, ATENDIDA o CERRADA; se permite reapertura y se audita. El tipo,
-descripción y referencias no son editables. La aplicación solo recomienda una espera,
-sin ejecutar instrucciones físicas. Las alertas permanecen para trazabilidad.
+Ambos roles pueden consultar y atender. Desde el dashboard, Alertas o su detalle,
+pulsar Atender (si está pendiente) o Registrar gestión. Escribir qué se hizo y elegir
+el estado resultante: Pendiente si necesita más seguimiento, Atendida si ya se
+gestionó o Cerrada si se concluye. Guardar gestión registra automáticamente usuario,
+fecha/hora local y transición de estado. La nota es obligatoria, hasta 2000 caracteres.
+
+El detalle y el formulario muestran Historial de atención con todas las notas y
+sus autores/fechas. Nuevas gestiones se agregan sin reemplazar las anteriores; puede
+reabrir una cerrada eligiendo Pendiente y explicando por qué. El tipo, descripción
+original y referencias no son editables desde esta acción. Las alertas previas
+sin notas muestran un historial vacío hasta que se registre una gestión real.
+La aplicación no ejecuta acciones físicas. El dashboard actualiza los contadores
+de pendientes, atendidas y cerradas según el resultado guardado.
 
 ## Reportes
 

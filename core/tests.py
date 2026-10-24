@@ -21,8 +21,9 @@ from operacion.models import (
     Recorrido,
     RegistroDemanda,
     Alerta,
+    GestionAlerta,
 )
-from operacion.services import guardar_operacion
+from operacion.services import guardar_operacion, atender_alerta
 from personal.models import Guardia, AsignacionGuardia, Piloto, Operador
 from accounts.roles import configurar_roles, ADMINISTRATIVO, OPERATIVO
 from core.forms import formulario
@@ -252,7 +253,7 @@ class TransmetroTests(TestCase):
                         200,
                     )
 
-                if objeto and modulo != "auditoria":
+                if objeto and modulo not in ["auditoria", "alertas"]:
                     self.assertEqual(
                         self.client.get(
                             reverse("editar", args=[modulo, objeto.pk])
@@ -477,19 +478,71 @@ class TransmetroTests(TestCase):
 
     def test_18_cambio_estado_y_auditoria(self):
         alerta = Alerta.objects.first()
-        self.client.force_login(self.admin)
+        url = reverse("atender_alerta", args=[alerta.pk])
+        self.assertEqual(self.client.get(url).status_code, 302)
+        self.client.force_login(
+            User.objects.create_user("sin_permiso_alertas")
+        )
         self.assertEqual(
             self.client.post(
-                reverse("editar", args=["alertas", alerta.pk]),
-                {"estado": "ATENDIDA"},
+                url, {"descripcion": "Intento", "estado": "ATENDIDA"}
             ).status_code,
-            302,
+            403,
         )
+        self.client.force_login(self.operador)
+        self.assertContains(self.client.get("/"), url)
+        self.assertContains(self.client.get("/gestion/alertas/"), url)
+        self.assertContains(
+            self.client.get(reverse("detalle", args=["alertas", alerta.pk])),
+            url,
+        )
+        self.assertEqual(self.client.get(url).status_code, 200)
+        self.assertEqual(GestionAlerta.objects.count(), 0)
+        alerta.refresh_from_db()
+        self.assertEqual(alerta.estado, "PENDIENTE")
+        for datos in [
+            {"descripcion": "   ", "estado": "ATENDIDA"},
+            {"descripcion": "Seguimiento", "estado": "INVALIDO"},
+            {"descripcion": "a" * 2001, "estado": "ATENDIDA"},
+        ]:
+            self.assertEqual(self.client.post(url, datos).status_code, 200)
+            self.assertEqual(GestionAlerta.objects.count(), 0)
+        estricto = Client(enforce_csrf_checks=True)
+        estricto.force_login(self.operador)
+        self.assertEqual(
+            estricto.post(
+                url, {"descripcion": "Sin CSRF", "estado": "ATENDIDA"}
+            ).status_code,
+            403,
+        )
+        respuesta = self.client.post(
+            url,
+            {
+                "descripcion": "Se coordinó el apoyo de un bus adicional.",
+                "estado": "ATENDIDA",
+                "usuario": self.admin.pk,
+                "usuario_nombre": "Suplantado",
+                "linea": 99999,
+            },
+        )
+        self.assertEqual(respuesta.status_code, 302)
         alerta.refresh_from_db()
         self.assertEqual(alerta.estado, "ATENDIDA")
+        gestion = GestionAlerta.objects.get()
+        self.assertEqual(gestion.usuario, self.operador)
+        self.assertEqual(gestion.usuario_nombre, self.operador.username)
+        self.assertIsNotNone(gestion.fecha_hora)
+        self.assertEqual(gestion.estado_anterior, "PENDIENTE")
+        self.assertEqual(gestion.estado_nuevo, "ATENDIDA")
+        self.assertContains(
+            self.client.get(respuesta.url), gestion.descripcion
+        )
+        self.assertIn(
+            ("Alertas atendidas", 1), self.client.get("/").context["resumen"]
+        )
         self.assertTrue(
             Auditoria.objects.filter(
-                usuario=self.admin,
+                usuario=self.operador,
                 accion="CAMBIAR_ESTADO",
                 registro=str(alerta.pk),
             ).exists()
@@ -502,6 +555,67 @@ class TransmetroTests(TestCase):
             ).status_code,
             403,
         )
+        self.client.force_login(self.admin)
+        # La ruta anterior redirige al flujo con nota, sin cambiar el estado.
+        self.assertRedirects(
+            self.client.post(
+                reverse("editar", args=["alertas", alerta.pk]),
+                {"estado": "CERRADA"},
+            ),
+            url,
+        )
+        alerta.refresh_from_db()
+        self.assertEqual(alerta.estado, "ATENDIDA")
+        respuesta = self.client.post(
+            url,
+            {
+                "descripcion": "Se confirmó la normalización del servicio.",
+                "estado": "CERRADA",
+            },
+        )
+        self.assertEqual(respuesta.status_code, 302)
+        alerta.refresh_from_db()
+        self.assertEqual(alerta.estado, "CERRADA")
+        self.assertEqual(alerta.gestiones.count(), 2)
+        pagina = self.client.get(respuesta.url)
+        self.assertContains(pagina, gestion.descripcion)
+        self.assertContains(
+            pagina, "Se confirmó la normalización del servicio."
+        )
+        self.assertIn(
+            ("Alertas cerradas", 1), self.client.get("/").context["resumen"]
+        )
+        self.client.force_login(self.operador)
+        self.assertEqual(
+            self.client.post(
+                url,
+                {
+                    "descripcion": "<script>alert(1)</script>",
+                    "estado": "PENDIENTE",
+                },
+            ).status_code,
+            302,
+        )
+        pagina = self.client.get(
+            reverse("detalle", args=["alertas", alerta.pk])
+        )
+        self.assertContains(pagina, "&lt;script&gt;")
+        self.assertNotContains(pagina, "<script>alert(1)</script>")
+        self.assertEqual(alerta.gestiones.count(), 3)
+        with patch(
+            "operacion.services.auditar",
+            side_effect=RuntimeError("fallo de auditoría"),
+        ):
+            with self.assertRaises(RuntimeError):
+                atender_alerta(
+                    alerta.pk,
+                    self.operador,
+                    "Cambio que debe revertirse.",
+                    "CERRADA",
+                )
+        alerta.refresh_from_db()
+        self.assertEqual(alerta.estado, "PENDIENTE")
+        self.assertEqual(alerta.gestiones.count(), 3)
 
     def test_19_reportes_y_filtros(self):
         self.client.force_login(self.supervisor)
